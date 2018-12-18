@@ -173,7 +173,7 @@ func newStackCmd() *cobra.Command {
 	cmd.AddCommand(newStackOutputCmd())
 	cmd.AddCommand(newStackRmCmd())
 	cmd.AddCommand(newStackSelectCmd())
-	cmd.AddCommand(newStackTagCmd())
+	cmd.AddCommand(newStackTagCmd(&stackName))
 
 	return cmd
 }
