@@ -53,13 +53,12 @@ func newStackTagGetCmd(stack *string) *cobra.Command {
 				Color: cmdutil.GetGlobalColorization(),
 			}
 
-			// Fetch the current stack and import a deployment.
 			s, err := requireStack(*stack, false, opts, true /*setCurrent*/)
 			if err != nil {
 				return err
 			}
 
-			tags, err := backend.GetStackTags()
+			tags, err := backend.GetStackTags(commandContext(), s)
 			if err != nil {
 				return err
 			}
@@ -88,13 +87,12 @@ func newStackTagLsCmd(stack *string) *cobra.Command {
 				Color: cmdutil.GetGlobalColorization(),
 			}
 
-			// Fetch the current stack and import a deployment.
-			_, err := requireStack(*stack, false, opts, true /*setCurrent*/)
+			s, err := requireStack(*stack, false, opts, true /*setCurrent*/)
 			if err != nil {
 				return err
 			}
 
-			tags, err := backend.GetStackTags()
+			tags, err := backend.GetStackTags(commandContext(), s)
 			if err != nil {
 				return err
 			}

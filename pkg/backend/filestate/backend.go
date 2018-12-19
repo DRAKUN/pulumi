@@ -146,7 +146,7 @@ func (b *localBackend) CreateStack(ctx context.Context, stackRef backend.StackRe
 		return nil, &backend.StackAlreadyExistsError{StackName: string(stackName)}
 	}
 
-	tags, err := backend.GetStackTags()
+	tags, err := backend.GetDynamicStackTags()
 	if err != nil {
 		return nil, errors.Wrap(err, "getting stack tags")
 	}
@@ -537,4 +537,11 @@ func (b *localBackend) getLocalStacks() ([]tokens.QName, error) {
 	}
 
 	return stacks, nil
+}
+
+func (b *localBackend) GetStackTags(ctx context.Context,
+	stackRef backend.StackReference) (map[apitype.StackTagName]string, error) {
+
+	// TODO JVP
+	return nil, nil
 }

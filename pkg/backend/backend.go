@@ -114,6 +114,8 @@ type Backend interface {
 	GetLogs(ctx context.Context, stackRef StackReference, query operations.LogQuery) ([]operations.LogEntry, error)
 	// Get the configuration from the most recent deployment of the stack.
 	GetLatestConfiguration(ctx context.Context, stackRef StackReference) (config.Map, error)
+	// GetStackTags fetches the stack's existing tags.
+	GetStackTags(ctx context.Context, stackRef StackReference) (map[apitype.StackTagName]string, error)
 
 	// ExportDeployment exports the deployment for the given stack as an opaque JSON message.
 	ExportDeployment(ctx context.Context, stackRef StackReference) (*apitype.UntypedDeployment, error)
