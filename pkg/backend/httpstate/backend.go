@@ -509,7 +509,7 @@ func (b *cloudBackend) CreateStack(
 		return nil, err
 	}
 
-	tags, err := backend.GetDynamicStackTags()
+	tags, err := backend.GetCurrentStackEnvironmentTags()
 	if err != nil {
 		return nil, errors.Wrap(err, "error determining initial tags")
 	}
@@ -681,7 +681,7 @@ func (b *cloudBackend) createAndStartUpdate(
 
 	// Start the update. We use this opportunity to pass new tags to the service, to pick up any
 	// metadata changes.
-	tags, err := backend.GetStackTags(ctx, stack)
+	tags, err := backend.GetUpdatedStackTags(ctx, stack)
 	if err != nil {
 		return client.UpdateIdentifier{}, 0, "", errors.Wrap(err, "getting stack tags")
 	}
@@ -1161,20 +1161,20 @@ func IsValidAccessToken(ctx context.Context, cloudURL, accessToken string) (bool
 func (b *cloudBackend) GetStackTags(ctx context.Context,
 	stackRef backend.StackReference) (map[apitype.StackTagName]string, error) {
 
-	stackID, err := b.getCloudStackIdentifier(stackRef)
+	stack, err := b.GetStack(ctx, stackRef)
 	if err != nil {
 		return nil, err
 	}
-
-	stack, err := b.client.GetStack(ctx, stackID)
-	// TODO JVP is this nil behavior what we want here?
-	if err != nil {
-		// If this was a 404, return nil, nil as per this method's contract.
-		if errResp, ok := err.(*apitype.ErrorResponse); ok && errResp.Code == http.StatusNotFound {
-			return nil, nil
-		}
-		return nil, err
+	if stack == nil {
+		return nil, errors.New("stack not found")
 	}
 
-	return stack.Tags, nil
+	return stack.(Stack).Tags(), nil
+}
+
+func (b *cloudBackend) UpdateStackTags(ctx context.Context,
+	stackRef backend.StackReference, tags map[apitype.StackTagName]string) error {
+
+	// TODO JVP
+	return nil
 }
